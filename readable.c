@@ -57,6 +57,7 @@ int dirTraverse(){
             return -1;
         }
         // From useful example in inode docs.
+        if(access(file,R_OK) < 0) continue;
         switch (statbuff.st_mode & S_IFMT) {
             case S_IFDIR:  
                 printf("d:%s\n",file);   
@@ -72,6 +73,12 @@ int dirTraverse(){
             default:       break;
         }
         errno = 0;
+    }
+    if(closedir(cd) < 0){
+        write(2, strerror(errno), strlen(strerror(errno)));
+        write(2, "\n",2);
+        return -1; 
+        
     }
     return 1;
 }
