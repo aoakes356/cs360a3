@@ -32,8 +32,8 @@ int dirTraverse(){
     struct dirent* read;
     errno = 0;
     while((read = readdir(cd)) != NULL && errno == 0){
-        if(!strncmp(read->d_name,".",2) || !strncmp(read->d_name,"..",3)) continue;
-        if(!strncmp(buffer,"/",2)){
+        if(!strncmp(read->d_name,".",256) || !strncmp(read->d_name,"..",256)) continue;
+        if(!strncmp(buffer,"/",256)){
             sprintf(file,"%s%s",buffer,read->d_name);
         }else{
             sprintf(file,"%s/%s",buffer,read->d_name);
