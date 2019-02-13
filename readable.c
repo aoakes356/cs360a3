@@ -7,22 +7,7 @@
 #include <sys/sysmacros.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-
-
-int dirTraverse();
-
-/* Recursively get each file
- * 1. Get the current working directory
- * 2. Create a file status buffer (shouldn't need to malloc).
- * 3. use opendir on the current directory
- * 4. For each file in the current working directory
- *  - if it's a file that is readable by the current process, print its name.
- *  - use stat to check if it is a symbolic link/valid permissions
- *  - if not, print the dir, chdir() to that directory and call the function again
-*/  
-
-
+int dirTraverse();  
 int main(int argc, char** argv){
     if(argc > 1){
         if(chdir(argv[1]) < 0){
@@ -37,7 +22,6 @@ int main(int argc, char** argv){
     }
     return 0;
 }
-
 // Traverses from the current working directory through all directories 'below' it.
 int dirTraverse(){
     char buffer[1024] = {0};
@@ -50,6 +34,7 @@ int dirTraverse(){
     while((read = readdir(cd)) != NULL && errno == 0){
         if(!strncmp(read->d_name,".",2) || !strncmp(read->d_name,"..",3)) continue;
         sprintf(file,"%s/%s",buffer,read->d_name);
+        if(access(file, R_OK) < 0) continue;
         if(lstat(file,&statbuff) == -1) {
             // Error handling goes here.
             write(2, strerror(errno), strlen(strerror(errno)));
@@ -57,10 +42,9 @@ int dirTraverse(){
             return -1;
         }
         // From useful example in inode docs.
-        if(access(file,R_OK) < 0) continue;
         switch (statbuff.st_mode & S_IFMT) {
             case S_IFDIR:  
-                printf("d:%s\n",file);   
+                printf("%s\n",file);   
                 if(chdir(file) < 0){
                     write(2, strerror(errno), strlen(strerror(errno)));
                     write(2, "\n",2);
@@ -68,8 +52,7 @@ int dirTraverse(){
                 } 
                 dirTraverse();
                 break;
-            case S_IFLNK:  printf("s:%s\n",file); break;
-            case S_IFREG:  printf("f:%s\n",file);   break;
+            case S_IFREG:  printf("%s\n",file); break;
             default:       break;
         }
         errno = 0;
@@ -82,5 +65,3 @@ int dirTraverse(){
     }
     return 1;
 }
-
-
