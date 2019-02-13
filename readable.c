@@ -38,7 +38,10 @@ int dirTraverse(){
         }else{
             sprintf(file,"%s/%s",buffer,read->d_name);
         }
-        if(access(file, R_OK) < 0) continue;
+        if(access(file, R_OK) < 0){
+            continue;
+            errno = 0;
+        }
         if(lstat(file,&statbuff) == -1) {
             // Error handling goes here.
             write(2, strerror(errno), strlen(strerror(errno)));
