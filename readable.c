@@ -33,7 +33,11 @@ int dirTraverse(){
     errno = 0;
     while((read = readdir(cd)) != NULL && errno == 0){
         if(!strncmp(read->d_name,".",2) || !strncmp(read->d_name,"..",3)) continue;
-        sprintf(file,"%s/%s",buffer,read->d_name);
+        if(!strncmp(buffer,"/",2)){
+            sprintf(file,"%s%s",buffer,read->d_name);
+        }else{
+            sprintf(file,"%s/%s",buffer,read->d_name);
+        }
         if(access(file, R_OK) < 0) continue;
         if(lstat(file,&statbuff) == -1) {
             // Error handling goes here.
