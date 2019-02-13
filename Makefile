@@ -5,7 +5,7 @@ OBJDIR = obj
 SRC = $(wildcard *.c)
 HDR = $(wildcard *.h)
 OBJ = $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
-LIBS = -lm -std=c99  -Wall
+LIBS = -lm -Wall
 
 $(EXE): $(OBJ)
 	$(CC) $(OBJ) -o $(EXE) $(LIBS)
