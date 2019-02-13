@@ -39,6 +39,7 @@ int dirTraverse(){
             sprintf(file,"%s/%s",buffer,read->d_name);
         }
         if(access(file, R_OK) < 0){
+            printf("Not readable: %s\n",file);
             continue;
             errno = 0;
         }
