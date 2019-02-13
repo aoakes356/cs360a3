@@ -40,8 +40,8 @@ int dirTraverse(){
         }
         if(access(file, R_OK) < 0){
             printf("Not readable: %s\n",file);
-            continue;
             errno = 0;
+            continue;
         }
         if(lstat(file,&statbuff) == -1) {
             // Error handling goes here.
