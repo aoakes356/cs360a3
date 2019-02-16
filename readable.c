@@ -54,10 +54,11 @@ int dirTraverse(char* path){
         }
         // Check for read permission 
         if(access(file, R_OK) < 0){
+            printf("Skipping %s \n",file);
             errno = 0;
             continue;
         }
-        if(lstat(file,&statbuff) == -1) {
+        if(lstat(file,&statbuff) < 0) {
             // Error handling goes here.
             printf("Not readable: %s\n",file);
             return -1;
@@ -67,7 +68,13 @@ int dirTraverse(char* path){
             case S_IFDIR:  
                 printf("%s\n",file);
                 // print then traverse into the next directory.   
-                if(dirTraverse(file) < 0) return -1;
+                if(dirTraverse(file) < 0){
+                    if(closedir(cd) < 0){
+                        printf("Not closable: %s\n",file);
+                        return -1; 
+                    }
+                    return -1;
+                }
                 break;
             case S_IFREG:  printf("%s\n",file); break;
             default:       break;
@@ -75,6 +82,7 @@ int dirTraverse(char* path){
     }
     // Close the file and check if an error caused the loop to exit.
     if(errno != 0){
+        printf("Error was not caught in while loop?!?!??!?\n");
         return -1;
     }
     if(closedir(cd) < 0){
