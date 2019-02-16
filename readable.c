@@ -33,8 +33,8 @@ int main(int argc, char** argv){
 int dirTraverse(char* path){
     printf("<------PATH TO BE OPENED-----> %s\n",path);
     if(access(path,R_OK) < 0){
-        printf("Error Opening given directory name: %s\n",path);
-        return -1; 
+        // No permissions so just skip it.
+        return 0; 
     }
     char file[4096] = {0};
     struct stat statbuff;
@@ -86,10 +86,10 @@ int dirTraverse(char* path){
     
     }
     // Close the file and check if an error caused the loop to exit.
-    if(errno != 0 ){
+    /*if(errno != 0 ){
         printf("Error was not caught in while loop?!?!??!?\n");
         return 0;
-    }
+    }*/
     if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
         return -1; 
