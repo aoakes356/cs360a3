@@ -62,7 +62,6 @@ int dirTraverse(char* path){
             continue;
         }
         if(lstat(file,&statbuff) < 0) {
-            // Error handling goes here.
             printf("Not readable: %s\n",file);
             return -1;
         }
@@ -84,10 +83,10 @@ int dirTraverse(char* path){
         }
     }
     // Close the file and check if an error caused the loop to exit.
-    if(errno != 0){
+    /*if(errno != 0){
         printf("Error was not caught in while loop?!?!??!?\n");
         return -1;
-    }
+    }*/
     if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
         return -1; 
