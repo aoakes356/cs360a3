@@ -36,7 +36,7 @@ int dirTraverse(char* path){
     char file[4096] = {0};
     struct stat statbuff;
     DIR* cd = opendir(path);
-    if(cd == NULL){
+    if(cd == NULL || errno != 0){
         printf("Failed to open directory: %s\n",path);
         return -1;
     }
