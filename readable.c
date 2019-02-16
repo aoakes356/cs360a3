@@ -16,6 +16,7 @@ int main(int argc, char** argv){
     if(argc > 1){ 
         if(realpath(argv[1],buffer) == NULL) customError("Invalid Directory");
         if(dirTraverse(buffer) < 0){
+            printf("Error On outer level\n");
             customError(NULL);
             return 1;
         }
