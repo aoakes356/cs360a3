@@ -9,7 +9,7 @@
 #include <limits.h>
 #include <stdlib.h>
 int dirTraverse(char* path);  
-int customError(char* message); // Always returns -1.
+int customError(char* message); 
 int main(int argc, char** argv){
     char buffer[4096];
     int i;
@@ -31,7 +31,6 @@ int main(int argc, char** argv){
 }
 // Traverses from the current working directory through all directories 'below' it.
 int dirTraverse(char* path){
-    printf("<------PATH TO BE OPENED-----> %s\n",path);
     if(access(path,R_OK) < 0){
         // No permissions so just skip it.
         return 0; 
@@ -59,7 +58,6 @@ int dirTraverse(char* path){
         }
         // Check for read permission 
         if(access(file, R_OK) < 0){
-            printf("Skipping %s \n",file);
             errno = 0;
             continue;
         }
@@ -72,9 +70,7 @@ int dirTraverse(char* path){
             case S_IFDIR:  
                 printf("%s\n",file);
                 // print then traverse into the next directory.   
-                if(dirTraverse(file) < 0){
-                    return -1;
-                }
+                if(dirTraverse(file) < 0) return -1;
                 break;
             case S_IFREG:  printf("%s\n",file); break;
             default:       break;
@@ -83,20 +79,14 @@ int dirTraverse(char* path){
     if(!res){
         printf("Error was caught in while \n");
         return -1;
-    
+
     }
-    // Close the file and check if an error caused the loop to exit.
-    /*if(errno != 0 ){
-        printf("Error was not caught in while loop?!?!??!?\n");
-        return 0;
-    }*/
     if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
         return -1; 
     }
     return 0;
 }
-
 int customError(char* message){
     if(errno != 0){
         write(2, strerror(errno), strlen(strerror(errno)));
