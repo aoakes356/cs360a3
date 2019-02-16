@@ -88,7 +88,7 @@ int dirTraverse(char* path){
     // Close the file and check if an error caused the loop to exit.
     if(errno != 0 ){
         printf("Error was not caught in while loop?!?!??!?\n");
-        return -1;
+        return 0;
     }
     if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
