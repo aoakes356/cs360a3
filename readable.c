@@ -54,14 +54,8 @@ int dirTraverse(char* path){
         }
         // Check for read permission 
         if(access(file, R_OK) < 0){
-            if(errno == EACCES || ELOOP || ENAMETOOLONG || ETXTBSY){
-                //printf("Not readable: %s\n",file);
-                errno = 0;
-                continue;
-            }else{
-                printf("Failed to read: %s\n",file);
-                return -1; 
-            }
+            errno = 0;
+            continue;
         }
         if(lstat(file,&statbuff) == -1) {
             // Error handling goes here.
@@ -81,9 +75,12 @@ int dirTraverse(char* path){
         errno = 0;
     }
     // Close the file and check if an error caused the loop to exit.
-    if(closedir(cd) < 0 || errno != 0){
+    if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
         return -1; 
+    }
+    if(errno != 0){
+        return -1;
     }
     return 0;
 }
