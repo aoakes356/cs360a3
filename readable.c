@@ -80,7 +80,7 @@ int dirTraverse(char* path){
         }
     }
     // Close the file and check if an error caused the loop to exit.
-    if(closedir(cd) < 0 || errno != 0){
+    if(closedir(cd) < 0 ){
         printf("Not closable: %s\n",file);
         return -1; 
     }
