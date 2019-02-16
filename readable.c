@@ -78,9 +78,10 @@ int dirTraverse(char* path){
             case S_IFREG:  printf("%s\n",file); break;
             default:       break;
         }
+        errno = 0;
     }
     // Close the file and check if an error caused the loop to exit.
-    if(closedir(cd) < 0 ){
+    if(closedir(cd) < 0 || errno != 0){
         printf("Not closable: %s\n",file);
         return -1; 
     }
