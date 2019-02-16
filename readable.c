@@ -58,6 +58,7 @@ int dirTraverse(char* path){
         // Check for read permission 
         if(access(file, R_OK) < 0){
             printf("Skipping %s \n",file);
+            errno = 0;
             continue;
         }
         if(lstat(file,&statbuff) < 0) {
