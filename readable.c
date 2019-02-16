@@ -14,10 +14,12 @@ int main(int argc, char** argv){
     char buffer[4096];
     int i;
     if(argc > 1){ 
-        if(realpath(argv[1],buffer) == NULL) customError("Invalid Directory");
+        if(realpath(argv[1],buffer) == NULL) {
+            customError("Invalid Directory");
+            return 1;
+        }
         if(dirTraverse(buffer) < 0){
-            printf("Error On outer level\n");
-            customError(NULL);
+            customError("Main: Error traversing directories\n");
             return 1;
         }
     }else if(dirTraverse(getcwd(buffer,1023)) < 0){
@@ -44,7 +46,7 @@ int dirTraverse(char* path){
     errno = 0;
     // Read all files and directories in the current directory
     // Recursively call the function again if a directory is found
-    while((read = readdir(cd)) != NULL){
+    while((read = readdir(cd)) != NULL && errno == 0){
         // Make sure that you are not looping
         if(!strncmp(read->d_name,".",256) || !strncmp(read->d_name,"..",256)) continue;
         // Check if the current directory is root dir, if so dont need the additional slash.
@@ -56,7 +58,6 @@ int dirTraverse(char* path){
         // Check for read permission 
         if(access(file, R_OK) < 0){
             printf("Skipping %s \n",file);
-            errno = 0;
             continue;
         }
         if(lstat(file,&statbuff) < 0) {
