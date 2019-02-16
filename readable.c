@@ -31,6 +31,7 @@ int main(int argc, char** argv){
 }
 // Traverses from the current working directory through all directories 'below' it.
 int dirTraverse(char* path){
+    printf("<------PATH TO BE OPENED-----> %s\n",path);
     if(access(path,R_OK) < 0){
         printf("Error Opening given directory name: %s\n",path);
         return -1; 
@@ -49,10 +50,6 @@ int dirTraverse(char* path){
     // Recursively call the function again if a directory is found
     while((read = readdir(cd)) != NULL ){
         // Make sure that you are not looping
-        if(errno != 0){
-            printf("Error reading the next file in dir\n");
-            return -1;
-        }
         if(!strncmp(read->d_name,".",256) || !strncmp(read->d_name,"..",256)) continue;
         // Check if the current directory is root dir, if so dont need the additional slash.
         if(!strncmp(path,"/",256)){
