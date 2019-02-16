@@ -14,7 +14,7 @@ int main(int argc, char** argv){
     char buffer[4096];
     int i;
     if(argc > 1){ 
-        if(realpath(argv[1],buffer) == NULL) customError(strncat(strncat("Invalid Path ",argv[1],4096),"\n",4096));
+        if(realpath(argv[1],buffer) == NULL) customError("Invalid Directory");
         if(dirTraverse(buffer) < 0){
             customError(NULL);
             return 1;
@@ -32,7 +32,7 @@ int dirTraverse(char* path){
         printf("Error Opening given directory name: %s\n",path);
         return -1; 
     }
-    char file[1023] = {0};
+    char file[4096] = {0};
     struct stat statbuff;
     DIR* cd = opendir(path);
     if(cd == NULL){
@@ -43,7 +43,7 @@ int dirTraverse(char* path){
     errno = 0;
     // Read all files and directories in the current directory
     // Recursively call the function again if a directory is found
-    while((read = readdir(cd)) != NULL && errno == 0){
+    while((read = readdir(cd)) != NULL){
         // Make sure that you are not looping
         if(!strncmp(read->d_name,".",256) || !strncmp(read->d_name,"..",256)) continue;
         // Check if the current directory is root dir, if so dont need the additional slash.
@@ -72,15 +72,14 @@ int dirTraverse(char* path){
             case S_IFREG:  printf("%s\n",file); break;
             default:       break;
         }
-        errno = 0;
     }
     // Close the file and check if an error caused the loop to exit.
+    if(errno != 0){
+        return -1;
+    }
     if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
         return -1; 
-    }
-    if(errno != 0){
-        return -1;
     }
     return 0;
 }
