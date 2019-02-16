@@ -47,8 +47,12 @@ int dirTraverse(char* path){
     errno = 0;
     // Read all files and directories in the current directory
     // Recursively call the function again if a directory is found
-    while((read = readdir(cd)) != NULL && (res= (errno == 0))){
+    while((read = readdir(cd)) != NULL ){
         // Make sure that you are not looping
+        if(errno != 0){
+            printf("Error reading the next file in dir\n");
+            return -1;
+        }
         if(!strncmp(read->d_name,".",256) || !strncmp(read->d_name,"..",256)) continue;
         // Check if the current directory is root dir, if so dont need the additional slash.
         if(!strncmp(path,"/",256)){
