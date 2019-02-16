@@ -37,6 +37,7 @@ int dirTraverse(char* path){
     }
     char file[4096] = {0};
     struct stat statbuff;
+    int res = 1;
     DIR* cd = opendir(path);
     if(cd == NULL || errno != 0){
         printf("Failed to open directory: %s\n",path);
@@ -46,7 +47,7 @@ int dirTraverse(char* path){
     errno = 0;
     // Read all files and directories in the current directory
     // Recursively call the function again if a directory is found
-    while((read = readdir(cd)) != NULL && errno == 0){
+    while((read = readdir(cd)) != NULL && (res= (errno == 0))){
         // Make sure that you are not looping
         if(!strncmp(read->d_name,".",256) || !strncmp(read->d_name,"..",256)) continue;
         // Check if the current directory is root dir, if so dont need the additional slash.
@@ -78,11 +79,16 @@ int dirTraverse(char* path){
             default:       break;
         }
     }
+    if(!res){
+        printf("Error was caught in while \n");
+        return -1;
+    
+    }
     // Close the file and check if an error caused the loop to exit.
-    /*if(errno != 0){
+    if(errno != 0 ){
         printf("Error was not caught in while loop?!?!??!?\n");
         return -1;
-    }*/
+    }
     if(closedir(cd) < 0){
         printf("Not closable: %s\n",file);
         return -1; 
