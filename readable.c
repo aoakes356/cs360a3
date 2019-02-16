@@ -71,10 +71,6 @@ int dirTraverse(char* path){
                 printf("%s\n",file);
                 // print then traverse into the next directory.   
                 if(dirTraverse(file) < 0){
-                    if(closedir(cd) < 0){
-                        printf("Not closable: %s\n",file);
-                        return -1; 
-                    }
                     return -1;
                 }
                 break;
